@@ -8,9 +8,11 @@ app.use(express.static('./public'))
 
 const museums_router = require('./routes/museums_router.js')
 const exhibits_router = require('./routes/exhibits_router.js')
+const creators_router = require('./routes/creators_router.js')
 
 app.use(museums_router)
 app.use(exhibits_router)
+app.use(creators_router)
 
 // GET user/:id
 app.get('/user/:id', (req, res) => {
