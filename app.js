@@ -3,13 +3,14 @@ const express = require('express')
 const app = express()
 const mysql = require('mysql')
 const bodyParser = require('body-parser').json();
-
+const cors = require('cors');
 app.use(express.static('./public'))
 
 const museums_router = require('./routes/museums_router.js')
 const exhibits_router = require('./routes/exhibits_router.js')
 const creators_router = require('./routes/creators_router.js')
 
+app.use(cors())
 app.use(museums_router)
 app.use(exhibits_router)
 app.use(creators_router)

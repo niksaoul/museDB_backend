@@ -37,21 +37,27 @@ creators_router.get('/creators/:id', (req, res) => {
             photo: row.photo,
           }
         })
-      res.json(creators)
-      res.setHeader('Content-Type', 'application/json')
-      res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+        res.setHeader('Content-Type', 'application/json')
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+        res.json(creators)
+
     })
   })
   
   
-  // GET all artists with basic info 
+  // GET all creators with basic info 
   creators_router.get('/creators', (req, res) => {
     console.log("Fetching all creators")
     const connection = getMuseDBConnection()
+    const name = req.query.name
+
     const queryAllCreators = "SELECT * FROM musedb.creator;"
+    const queryCreatorName = `SELECT * FROM creator WHERE creator.name LIKE "%${name}%"`
+
+    if (name === undefined || name === '') {
       connection.query(queryAllCreators, (err, rows) => {
       if (err) {
-        console.log("Failed to query for exhibit: " + err)
+        console.log("Failed to query for creator: " + err)
         res.sendStatus(500)
         res.end()
         return
@@ -69,7 +75,31 @@ creators_router.get('/creators/:id', (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
       res.setHeader('Content-Type', 'application/json')
       res.json(creators)
-    })
+      })
+    }
+    else {
+      connection.query(queryCreatorName, (err, rows) => {
+        if (err) {
+          console.log("Failed to query for creator with name : " + name + ". Error info: " + err)
+          res.sendStatus(500)
+          res.end()
+          return
+        }
+        console.log("I think we fetched creators with name " + name+ " successfully")
+        const creators = rows.map((row) => {
+          return {
+            id: row.creatorID,
+            name: row.name,
+            bio: row.bio,
+            nationality: row.nationality,
+            photo: row.photo,
+          }
+        })
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000')
+        res.setHeader('Content-Type', 'application/json')
+        res.json(creators)
+        })
+    }
   })
 
 
